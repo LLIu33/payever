@@ -45,32 +45,34 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
-  async getFriends(
+  public async getFriends(
     userId: number,
     hobby?: string,
     city?: string,
   ): Promise<any> {
-    const user = await this.findById(userId);
+    const user: User = await this.findById(userId);
     if (!user) {
       throw new Error('User not found');
     }
-    let query: object = { $and: [{ _id: { $in: user.friends } }] };
+    const query: object = { $and: [{ _id: { $in: user.friends } }] };
+    const andConditionsKey: string = '$and';
 
     if (hobby) {
-      query['$and'].push({ 'hobbies.name': { $eq: hobby } });
+      query[andConditionsKey].push({ 'hobbies.name': { $eq: hobby } });
     }
 
     if (city) {
-      query['$and'].push({ 'cities.name': { $eq: city } });
+      query[andConditionsKey].push({ 'cities.name': { $eq: city } });
     }
 
     return this.userModel.find(query).exec();
   }
 
-  async getHobbiesByCity(city: string): Promise<any> {
+  public async getHobbiesByCity(city: string): Promise<any> {
     if (!city) {
       throw new Error('City not found');
     }
+
     return this.userModel.aggregate([
       { $unwind: '$hobbies' },
       { $match: { 'cities.name': city } },
@@ -78,10 +80,11 @@ export class UserService {
     ]);
   }
 
-  async getCitiesByHobby(hobby: string): Promise<any> {
+  public async getCitiesByHobby(hobby: string): Promise<any> {
     if (!hobby) {
       throw new Error('Hobby not found');
     }
+
     return this.userModel.aggregate([
       { $unwind: '$cities' },
       { $match: { 'hobbies.name': hobby } },
