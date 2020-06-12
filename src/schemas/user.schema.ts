@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Document } from 'mongoose';
+import { Hobby } from '../interfaces/hobby.interface';
 import { HobbySchema } from './hobby.schema';
 import { CitySchema } from './city.schema';
 
@@ -19,3 +20,27 @@ export class User extends Document {
 }
 
 export const UserSchema: Schema = SchemaFactory.createForClass(User);
+const concertsList: string[] = ['Woodstock', 'US Festival', 'Kubana'];
+const resortList: string[] = ['Whistler Blackcomb', 'Courchevel', 'Zermatt'];
+const stampList: string[] = [
+  'Elvis presley',
+  'Wounders of America',
+  'Marvel Super Heroes',
+];
+
+UserSchema.pre('save', function (next: any): void {
+  const user: Schema = this;
+  const featuresMap: object = {
+    guitar: { concerts: concertsList },
+    skiing: { resorts: resortList },
+    stamp: { stamps: stampList },
+  };
+
+  for (const featureKey in featuresMap) {
+    if (user.hobbies.some((hobby: Hobby) => hobby.name === featureKey)) {
+      user.features = { ...featuresMap[featureKey] };
+    }
+  }
+
+  next();
+});
