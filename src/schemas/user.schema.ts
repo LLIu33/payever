@@ -19,7 +19,7 @@ export class User extends Document {
   public friends?: [{ type: Types.ObjectId; ref: 'User' }];
 
   @Prop()
-  public features?: [string];
+  public features?: object;
 }
 
 export const UserSchema: Schema = SchemaFactory.createForClass(User);
