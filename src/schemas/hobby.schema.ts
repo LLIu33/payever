@@ -7,4 +7,4 @@ export class Hobby extends Document {
   public name: string;
 }
 
-export const HobbySchema: Schema = SchemaFactory.createForClass(Hobby);
+export const HobbySchema: any = SchemaFactory.createForClass(Hobby);

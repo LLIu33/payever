@@ -5,6 +5,8 @@ import { UserController } from './user.controller';
 import { HobbyController } from './hobby.controller';
 import { CityController } from './city.controller';
 import { User, UserSchema } from './schemas/user.schema';
+import { Hobby, HobbySchema } from './schemas/hobby.schema';
+import { City, CitySchema } from './schemas/city.schema';
 
 @Module({
   controllers: [UserController, HobbyController, CityController],
@@ -16,6 +18,8 @@ import { User, UserSchema } from './schemas/user.schema';
       useUnifiedTopology: true,
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: Hobby.name, schema: HobbySchema }]),
+    MongooseModule.forFeature([{ name: City.name, schema: CitySchema }]),
   ],
   providers: [UserService],
 })

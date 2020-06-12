@@ -22,7 +22,7 @@ export class User extends Document {
   public features?: object;
 }
 
-export const UserSchema: Schema = SchemaFactory.createForClass(User);
+export const UserSchema: any = SchemaFactory.createForClass(User);
 const concertsList: string[] = ['Woodstock', 'US Festival', 'Kubana'];
 const resortList: string[] = ['Whistler Blackcomb', 'Courchevel', 'Zermatt'];
 const stampList: string[] = [
@@ -32,7 +32,7 @@ const stampList: string[] = [
 ];
 
 UserSchema.pre('save', function (next: any): void {
-  const user: Schema = this;
+  const user: any = this;
   const featuresMap: object = {
     guitar: { concerts: concertsList },
     skiing: { resorts: resortList },

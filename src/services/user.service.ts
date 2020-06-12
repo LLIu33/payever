@@ -1,12 +1,13 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { User } from '../interfaces/user.interface';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from '../schemas/user.schema';
 import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('User')
+    @InjectModel(User.name)
     private userModel: Model<User>,
   ) {}
 
@@ -20,7 +21,7 @@ export class UserService {
     return this.userModel.findById(id).remove();
   }
 
-  public async addFriend(userId: number, friendId: number): Promise<any> {
+  public async addFriend(userId: number, friendId: number): Promise<User> {
     const user: User = await this.userModel.findById(userId);
     if (!user) {
       throw new Error('User not found');
@@ -31,7 +32,7 @@ export class UserService {
       throw new Error('Friend user not found');
     }
 
-    user.friends.push(friend);
+    user.friends.push(friend._id);
     await user.save();
 
     return user;

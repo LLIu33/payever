@@ -7,4 +7,4 @@ export class City extends Document {
   public name: string;
 }
 
-export const CitySchema: Schema = SchemaFactory.createForClass(City);
+export const CitySchema: any = SchemaFactory.createForClass(City);
