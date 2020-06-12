@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
 
-export interface IHobby extends Document {
+export interface Hobby extends Document {
   readonly name: string;
 }

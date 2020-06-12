@@ -1,10 +1,10 @@
 import { Document } from 'mongoose';
-import { ICity } from './city.interface';
-import { IHobby } from './hobby.interface';
+import { City } from './city.interface';
+import { Hobby } from './hobby.interface';
 
-export interface IUser extends Document {
+export interface User extends Document {
   readonly name: string;
-  readonly hobbies?: [IHobby];
-  readonly cities?: [ICity];
-  readonly friends?: [IUser];
+  readonly hobbies?: [Hobby];
+  readonly cities?: [City];
+  readonly friends?: [User];
 }

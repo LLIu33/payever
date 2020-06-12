@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
 
-export interface ICity extends Document {
+export interface City extends Document {
   readonly name: string;
 }
