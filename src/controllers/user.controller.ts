@@ -9,12 +9,15 @@ import {
   Query,
 } from '@nestjs/common';
 
-import { UserService } from './services';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UserService, HobbyService } from '../services';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly hobbyService: HobbyService,
+  ) {}
 
   @Post()
   public async createUser(@Body() createUserDto: CreateUserDto): Promise<any> {

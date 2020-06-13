@@ -3,15 +3,19 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schemas/user.schema';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { Hobby } from '../schemas/hobby.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(Hobby.name)
+    private hobbyModel: Model<Hobby>,
   ) {}
 
   public async create(createUserDto: CreateUserDto): Promise<User> {
+    createUserDto.features = await this.generateFeatures(createUserDto);
     const createdUser: User = new this.userModel(createUserDto);
 
     return createdUser.save();
@@ -59,11 +63,15 @@ export class UserService {
     const andConditionsKey: string = '$and';
 
     if (hobby) {
-      query[andConditionsKey].push({ 'hobbies.name': { $eq: hobby } });
+      query[andConditionsKey].push({
+        'hobbies.name': { $eq: hobby },
+      });
     }
 
     if (city) {
-      query[andConditionsKey].push({ 'cities.name': { $eq: city } });
+      query[andConditionsKey].push({
+        'cities.name': { $eq: city },
+      });
     }
 
     return this.userModel.find(query).exec();
@@ -91,5 +99,45 @@ export class UserService {
       { $match: { 'hobbies.name': hobby } },
       { $group: { _id: '$cities.name' } },
     ]);
+  }
+
+  private async generateFeatures(createUserDto: CreateUserDto): Promise<any> {
+    const hobbies: Hobby[] = await this.hobbyModel
+      .find()
+      .where('_id')
+      .in(createUserDto.hobbies)
+      .exec();
+
+    const concertsList: string[] = ['Woodstock', 'US Festival', 'Kubana'];
+    const resortList: string[] = [
+      'Whistler Blackcomb',
+      'Courchevel',
+      'Zermatt',
+    ];
+    const stampList: string[] = [
+      'Elvis presley',
+      'Wounders of America',
+      'Marvel Super Heroes',
+    ];
+
+    const featuresMap: object = {
+      guitar: { concerts: concertsList },
+      skiing: { resorts: resortList },
+      stamp: { stamps: stampList },
+    };
+
+    const allFeatures: object[] = [];
+
+    for (const featureKey in featuresMap) {
+      if (featuresMap.hasOwnProperty(featureKey)) {
+        for (const hobby of hobbies) {
+          if (hobby.name === featureKey) {
+            allFeatures.push(featuresMap[featureKey]);
+          }
+        }
+      }
+    }
+
+    return allFeatures;
   }
 }

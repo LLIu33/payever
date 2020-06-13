@@ -7,4 +7,5 @@ export interface User extends Document {
   readonly hobbies?: [Hobby];
   readonly cities?: [City];
   readonly friends?: [User];
+  readonly features?: object;
 }
